@@ -31,7 +31,6 @@ if (isset($_GET['verify_id'])) {
     $msg = "<div class='alert alert-success'>Akun berhasil diaktifkan.</div>";
 }
 
-// Filter Logic
 $where = "1=1";
 $params = [];
 $types = "";

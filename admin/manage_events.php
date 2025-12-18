@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-// Filter Logic
 $where = "1=1";
 $params = [];
 $types = "";

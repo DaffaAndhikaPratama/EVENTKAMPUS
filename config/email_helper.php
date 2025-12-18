@@ -5,6 +5,8 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 }
 
+require_once __DIR__ . '/../classes/Notification.php';
+
 $phpmailer_path = __DIR__ . '/../phpmailer';
 
 if (file_exists($phpmailer_path . '/Exception.php')) {
@@ -30,19 +32,20 @@ if (file_exists(__DIR__ . '/../../.env')) {
     $dotenv->safeLoad();
 }
 
-function kirimEmail($to_email, $to_name, $subject, $body) {
+function kirimEmail($to_email, $to_name, $subject, $body)
+{
     $mail = new PHPMailer(true);
 
     try {
-        $mail->SMTPDebug = 0; 
+        $mail->SMTPDebug = 0;
         $mail->isSMTP();
-        
-        $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['SMTP_USER']; 
-        $mail->Password   = $_ENV['SMTP_PASS'];  
+
+        $mail->Host = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['SMTP_USER'];
+        $mail->Password = $_ENV['SMTP_PASS'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = $_ENV['SMTP_PORT'] ?? 587;
+        $mail->Port = $_ENV['SMTP_PORT'] ?? 587;
 
         $mail->SMTPOptions = array(
             'ssl' => array(
@@ -53,20 +56,39 @@ function kirimEmail($to_email, $to_name, $subject, $body) {
         );
 
         $fromEmail = $_ENV['SMTP_FROM_EMAIL'] ?? 'noreply@eventkampus.com';
-        $fromName  = $_ENV['SMTP_FROM_NAME'] ?? 'Admin EventKampus';
-        
+        $fromName = $_ENV['SMTP_FROM_NAME'] ?? 'Admin EventKampus';
+
         $mail->setFrom($fromEmail, $fromName);
         $mail->addAddress($to_email, $to_name);
 
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $mail->Body    = $body;
+        $mail->Body = $body;
 
         $mail->send();
+
+        if (class_exists('Notification')) {
+            $notif = new Notification();
+            $uid = $notif->getUserIdByEmail($to_email);
+            if ($uid) {
+                $notif->log($uid, "Email sent to $to_email: $subject", 'email', 'sent');
+            }
+        }
+
         return true;
 
     } catch (Exception $e) {
-        file_put_contents(__DIR__ . '/../email_error_log.txt', date('Y-m-d H:i:s') . " - Error: " . $mail->ErrorInfo . "\n", FILE_APPEND);
+        $errorMsg = $mail->ErrorInfo;
+        file_put_contents(__DIR__ . '/../email_error_log.txt', date('Y-m-d H:i:s') . " - Error: " . $errorMsg . "\n", FILE_APPEND);
+
+        if (class_exists('Notification')) {
+            $notif = new Notification();
+            $uid = $notif->getUserIdByEmail($to_email);
+            if ($uid) {
+                $notif->log($uid, "Email failed: $subject. Error: $errorMsg", 'email', 'failed');
+            }
+        }
+
         return false;
     }
 }
