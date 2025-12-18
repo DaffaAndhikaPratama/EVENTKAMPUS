@@ -61,30 +61,33 @@ if (isset($_POST['update'])) {
     $location = ($event_type == 'offline') ? trim($_POST['location']) : 'Online Event';
     $broadcast = isset($_POST['broadcast_zoom']);
 
-    $upd = $conn->prepare("UPDATE events SET 
-        title=?, category=?, event_type=?, event_date=?, location=?, zoom_link=?, price=?, description=?, poster=?, certificate_link=?,
-        payment_info_bank=?, payment_info_ewallet=? 
-        WHERE id=? AND user_id=?");
+    require_once __DIR__ . '/../classes/Event.php';
+    $eventObj = new Event();
 
-    $upd->bind_param(
-        "ssssssisssssii",
-        $title,
-        $category,
-        $event_type,
-        $date,
-        $location,
-        $zoom_link,
-        $price,
-        $desc,
-        $poster_name,
-        $certificate_link,
-        $bank_info,
-        $ewallet_info,
-        $event_id,
-        $user_id
-    );
+    $data = [
+        'title' => $title,
+        'category' => $category,
+        'event_type' => $event_type,
+        'event_date' => $date,
+        'location' => $location,
+        'zoom_link' => $zoom_link,
+        'price' => $price,
+        'description' => $desc,
+        'poster' => $poster_name,
+        'bank_info' => $bank_info,
+        'ewallet_info' => $ewallet_info,
+        
+    ];
 
-    if ($upd->execute()) {
+    $updateSuccess = $eventObj->update($event_id, $data);
+
+    if ($updateSuccess) {
+        $manual = $conn->prepare("UPDATE events SET certificate_link=? WHERE id=?");
+        $manual->bind_param("si", $certificate_link, $event_id);
+        $manual->execute();
+    }
+
+    if ($updateSuccess) {
         $alert_message = "Event berhasil diperbarui!";
         $count_sent_zoom = 0;
         $count_sent_cert = 0;
@@ -133,7 +136,7 @@ if (isset($_POST['update'])) {
         echo "<script>alert('$alert_message'); window.location='" . BASE_URL . "/pages/dashboard.php';</script>";
 
     } else {
-        $msg = "<div class='alert alert-danger'>Gagal update event: " . $conn->error . "</div>";
+        $msg = "<div class='alert alert-danger'>Gagal update event.</div>";
     }
 }
 ?>

@@ -46,38 +46,46 @@ function outputCSV($data)
 
 outputCSV(["KELOMPOK DATA", "METRIK / ITEM", "DETAIL (STATUS/INFO)", "JUMLAH / NILAI", "KETERANGAN TAMBAHAN"]);
 
-$user_total = $conn->query("SELECT COUNT(*) as t FROM users")->fetch_assoc()['t'];
+require_once __DIR__ . '/../../classes/AnalyticsService.php';
+$analytics = new AnalyticsService();
+
+$user_total = $analytics->getTotalUsers();
 outputCSV(['Statistik User', 'Jumlah Total User', 'Semua Akun', $user_total, '-']);
 
-$user_active = $conn->query("SELECT COUNT(*) as t FROM users WHERE is_verified=1")->fetch_assoc()['t'];
+$user_active = $analytics->getActiveUsers();
 outputCSV(['Statistik User', 'Jumlah User Aktif', 'Terverifikasi', $user_active, '-']);
 
-$q = $conn->query("SELECT role, COUNT(*) as t FROM users GROUP BY role");
-while ($r = $q->fetch_assoc()) {
+$roles = $analytics->getUserRoleComposition();
+foreach ($roles as $r) {
     $rName = ucfirst($r['role'] == 'event_organizer' ? 'Event Organizer' : $r['role']);
     outputCSV(['Komposisi Role', 'Jumlah User', $rName, $r['t'], '-']);
 }
 
-$event_active = $conn->query("SELECT COUNT(*) as t FROM events WHERE event_date >= CURRENT_DATE")->fetch_assoc()['t'];
+$event_active = $analytics->getActiveEvents();
 outputCSV(['Statistik Event', 'Event Aktif', 'Belum Terlaksana', $event_active, '-']);
 
-$event_past = $conn->query("SELECT COUNT(*) as t FROM events WHERE event_date < CURRENT_DATE")->fetch_assoc()['t'];
+$event_past = $analytics->getPastEvents();
 outputCSV(['Statistik Event', 'Event Selesai', 'Lewat Tanggal', $event_past, '-']);
 
-$event_month_count = $conn->query("SELECT COUNT(*) as t FROM events WHERE MONTH(created_at) = '$month' AND YEAR(created_at) = '$year'")->fetch_assoc()['t'];
+$event_month_count = $analytics->getNewEventsThisMonth();
 outputCSV(['Statistik Event', 'Event Baru', "Dibuat Bulan Ini ($monthName)", $event_month_count, '-']);
 
-$q_ev_month = $conn->query("SELECT title, event_date, participants FROM events WHERE MONTH(event_date) = '$month' AND YEAR(event_date) = '$year'");
-$event_month_exec_count = $q_ev_month->num_rows;
+$events_exec_month = $analytics->getEventsExecutedThisMonth();
+$event_month_exec_count = count($events_exec_month);
 outputCSV(['Statistik Event', 'Event Pelaksanaan Bulan Ini', $monthName, $event_month_exec_count, '-']);
 
-$q_cat = $conn->query("SELECT category, COUNT(*) as t FROM events GROUP BY category");
-while ($c = $q_cat->fetch_assoc()) {
+$cats = $analytics->getCategoryDistribution();
+foreach ($cats as $c) {
     outputCSV(['Statistik Kategori', 'Jumlah Event', $c['category'], $c['t'], '-']);
 }
 
-$q_new = $conn->query("SELECT name, email, role, created_at FROM users ORDER BY created_at DESC LIMIT 10");
-while ($u = $q_new->fetch_assoc()) {
+$popular = $analytics->getMostPopularEvents();
+foreach ($popular as $p) {
+    outputCSV(['Statistik Populer', 'Event Diminati', $p['title'], $p['participants'] . ' Peserta', 'Kat: ' . $p['category']]);
+}
+
+$new_users = $analytics->getRecentUsers();
+foreach ($new_users as $u) {
     outputCSV([
         'Daftar User Terbaru',
         $u['name'],
@@ -87,26 +95,8 @@ while ($u = $q_new->fetch_assoc()) {
     ]);
 }
 
-if ($event_month_exec_count > 0) {
-    $q_ev_month_list = $conn->query("SELECT e.title, u.name as organizer, e.event_date, e.category, e.participants 
-                                    FROM events e JOIN users u ON e.user_id = u.id 
-                                    WHERE MONTH(e.event_date) = '$month' AND YEAR(e.event_date) = '$year'
-                                    ORDER BY e.event_date ASC");
-    while ($row = $q_ev_month_list->fetch_assoc()) {
-        outputCSV([
-            'Rincian Event Bulan Ini',
-            $row['title'],
-            date('d-m-Y', strtotime($row['event_date'])),
-            $row['participants'] . ' Peserta',
-            'Oleh: ' . $row['organizer'] . ' | Kat: ' . $row['category']
-        ]);
-    }
-} else {
-    outputCSV(['Rincian Event Bulan Ini', 'Tidak ada event bulan ini', '-', '-', '-']);
-}
-
-$q_all = $conn->query("SELECT e.title, e.event_date, e.category, e.participants FROM events e ORDER BY e.event_date DESC");
-while ($row = $q_all->fetch_assoc()) {
+$all_events = $analytics->getAllEvents();
+foreach ($all_events as $row) {
     $status = (strtotime($row['event_date']) >= time()) ? 'Aktif' : 'Lewat';
     outputCSV([
         'Data Semua Event',

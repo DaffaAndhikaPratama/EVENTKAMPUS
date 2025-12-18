@@ -48,25 +48,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $stmt = $conn->prepare("INSERT INTO events (user_id, title, category, event_type, event_date, location, zoom_link, price, description, poster, payment_info_bank, payment_info_ewallet, participants, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NOW())");
+        require_once __DIR__ . '/../classes/Event.php';
+        $eventObj = new Event();
 
-        $stmt->bind_param(
-            "issssssissss",
-            $user_id,
-            $title,
-            $category,
-            $event_type,
-            $event_date,
-            $location,
-            $zoom_link,
-            $price,
-            $description,
-            $poster_name,
-            $bank_info,
-            $ewallet_info
-        );
+        $eventData = [
+            'user_id' => $user_id,
+            'title' => $title,
+            'category' => $category,
+            'event_type' => $event_type,
+            'event_date' => $event_date,
+            'location' => $location,
+            'zoom_link' => $zoom_link,
+            'price' => $price,
+            'description' => $description,
+            'poster' => $poster_name,
+            'bank_info' => $bank_info,
+            'ewallet_info' => $ewallet_info
+        ];
 
-        if ($stmt->execute()) {
+        if ($eventObj->create($eventData)) {
 
             require_once __DIR__ . '/../config/google_init.php';
             require_once __DIR__ . '/../config/calendar_helper.php';

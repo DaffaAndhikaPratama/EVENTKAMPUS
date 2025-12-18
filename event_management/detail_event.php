@@ -98,7 +98,6 @@ if (isset($_POST['daftar_event']) && $user_id) {
                         <p><strong>ID Registrasi:</strong> #{$insert->insert_id}</p>
                     </div>";
 
-                    // Google Calendar Integration for Participant
                     require_once __DIR__ . '/../config/google_init.php';
                     require_once __DIR__ . '/../config/calendar_helper.php';
 

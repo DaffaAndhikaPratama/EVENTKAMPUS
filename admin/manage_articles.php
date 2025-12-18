@@ -7,7 +7,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
     exit;
 }
 
-// Fetch all articles
 $articles = $conn->query("SELECT * FROM articles ORDER BY created_at DESC");
 ?>
 

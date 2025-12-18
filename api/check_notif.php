@@ -1,6 +1,5 @@
 <?php
 session_start();
-// PATH FIX: api/ -> config/
 require_once __DIR__ . '/../config/database.php'; 
 
 header('Content-Type: application/json');
@@ -36,8 +35,7 @@ if ($result->num_rows > 0) {
     
     $full_link = null;
     if ($notif['link']) {
-        // Link notification akan diarahkan ke BASE_URL + path
-        $full_link = $notif['link']; // Biarkan link penuh
+        $full_link = $notif['link']; 
     }
     
     echo json_encode([
