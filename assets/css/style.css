@@ -1,0 +1,26 @@
+/* Custom CSS Sederhana & Bersih */
+
+/* Card Event: Memberikan efek bayangan halus saat mouse diarahkan */
+.card-event {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* Hilangkan border bawaan agar lebih modern */
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.card-event:hover {
+    transform: translateY(-5px); /* Naik sedikit */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Bayangan */
+}
+
+/* Agar gambar di dalam card selalu rapi ukurannya */
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Typography Navbar */
+.navbar-brand {
+    font-weight: 800;
+}
