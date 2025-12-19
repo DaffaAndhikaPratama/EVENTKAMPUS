@@ -22,9 +22,17 @@ if (!empty($search_q)) {
 }
 
 if (!empty($filter_cat)) {
-    $where .= " AND e.category = ?";
-    $params[] = $filter_cat;
-    $types .= "s";
+    if ($filter_cat == 'Lainnya') {
+        $cats = ['Seminar', 'Workshop', 'Hiburan', 'Lomba', 'Bursa Kerja', 'Seni & Budaya'];
+        $placeholders = implode(',', array_fill(0, count($cats), '?'));
+        $where .= " AND e.category NOT IN ($placeholders)";
+        $types .= str_repeat('s', count($cats));
+        $params = array_merge($params, $cats);
+    } else {
+        $where .= " AND e.category = ?";
+        $params[] = $filter_cat;
+        $types .= "s";
+    }
 }
 
 $query = "
@@ -52,31 +60,36 @@ $result = $stmt->get_result();
         <a href="../pages/dashboard.php" class="btn btn-outline-secondary">Kembali</a>
     </div>
 
-    <!-- Search & Filter Form -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-3">
             <form method="GET" class="row g-2 align-items-center">
                 <div class="col-md-5">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                        <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Cari judul event..." value="<?= htmlspecialchars($search_q) ?>">
+                        <span class="input-group-text bg-white border-end-0"><i
+                                class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="q" class="form-control border-start-0 ps-0"
+                            placeholder="Cari judul event..." value="<?= htmlspecialchars($search_q) ?>">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <select name="cat" class="form-select" onchange="this.form.submit()">
-                        <option value="">- Semua Kategori -</option>
-                        <option value="Seminar" <?= $filter_cat == 'Seminar' ? 'selected' : '' ?>>Seminar</option>
-                        <option value="Workshop" <?= $filter_cat == 'Workshop' ? 'selected' : '' ?>>Workshop</option>
-                        <option value="Webinar" <?= $filter_cat == 'Webinar' ? 'selected' : '' ?>>Webinar</option>
-                        <option value="Kompetisi" <?= $filter_cat == 'Kompetisi' ? 'selected' : '' ?>>Kompetisi</option>
-                        <option value="Pentas Seni" <?= $filter_cat == 'Pentas Seni' ? 'selected' : '' ?>>Pentas Seni</option>
-                        <option value="Lainnya" <?= $filter_cat == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
+                        <option value="" <?= empty($filter_cat) ? 'selected' : '' ?>>- Semua Kategori -</option>
+                        <?php
+                        $cats = ['Seminar', 'Workshop', 'Hiburan', 'Lomba', 'Bursa Kerja', 'Seni & Budaya'];
+                        foreach ($cats as $c) {
+                            $selected = ($filter_cat == $c) ? 'selected' : '';
+                            echo "<option value=\"$c\" $selected>$c</option>";
+                        }
+                        ?>
+                        <option value="Lainnya" <?= $filter_cat == 'Lainnya' ? 'selected' : '' ?>>Lainnya (Kategori Lain)
+                        </option>
                     </select>
                 </div>
                 <div class="col-md-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100 fw-bold">Filter</button>
-                    <?php if(!empty($search_q) || !empty($filter_cat)): ?>
-                        <a href="manage_events.php" class="btn btn-light border" title="Reset"><i class="bi bi-x-lg"></i></a>
+                    <?php if (!empty($search_q) || !empty($filter_cat)): ?>
+                        <a href="manage_events.php" class="btn btn-light border" title="Reset"><i
+                                class="bi bi-x-lg"></i></a>
                     <?php endif; ?>
                 </div>
             </form>
@@ -124,7 +137,8 @@ $result = $stmt->get_result();
                                         <?= htmlspecialchars($ev['title']) ?>
                                     </a>
                                 </td>
-                                <td><span class="badge bg-secondary"><?= htmlspecialchars($ev['category'] ?? '-') ?></span></td>
+                                <td><span class="badge bg-secondary"><?= htmlspecialchars($ev['category'] ?? '-') ?></span>
+                                </td>
                                 <td><?= htmlspecialchars($ev['organizer_name']) ?></td>
                                 <td><?= date('d M Y', strtotime($ev['event_date'])) ?></td>
                                 <td>

@@ -60,7 +60,7 @@ require_once __DIR__ . '/calendar/logic.php';
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
                 <li class="nav-item"><button class="nav-link active fw-bold text-primary" data-bs-toggle="tab"
                         data-bs-target="#t1"><i class="bi bi-ticket-perforated-fill me-2"></i> Event Diikuti <span
-                            class="badge bg-primary ms-2"><?= $joined->num_rows ?></span></button></li>
+                            class="badge bg-primary ms-2"><?= $joined ? $joined->num_rows : 0 ?></span></button></li>
                 <?php if ($role != 'mahasiswa'): ?>
                     <li class="nav-item"><button class="nav-link fw-bold text-secondary" data-bs-toggle="tab"
                             data-bs-target="#t2"><i class="bi bi-calendar-check-fill me-2"></i> <?= ($role == 'admin') ? 'Event-event' : 'Event Saya' ?> <span
@@ -83,7 +83,7 @@ require_once __DIR__ . '/calendar/logic.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if ($joined->num_rows > 0):
+                                <?php if ($joined && $joined->num_rows > 0):
                                     while ($j = $joined->fetch_assoc()): ?>
                                         <tr>
                                             <td class="ps-4">
