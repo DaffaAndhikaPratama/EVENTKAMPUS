@@ -77,7 +77,7 @@ Kampus seringkali memiliki banyak kegiatan menarik, namun penyebaran informasiny
 
 1.  **Clone Repository:**
     ```bash
-    git clone https://github.com/username/EventKampus
+    git clone https://github.com/DaffaAndhikaPratama/EVENTKAMPUS
     cd eventkampus
     ```
 2.  **Install Dependencies:**
