@@ -28,7 +28,7 @@ if (isset($_POST['verify'])) {
 
                 echo "<script>
                         alert('Verifikasi Berhasil! Selamat datang.');
-                        window.location='../pages/index.php';
+                        window.location='../index.php';
                       </script>";
                 exit;
             }
@@ -51,7 +51,8 @@ if (isset($_POST['verify'])) {
                     </div>
                     <h3 class="fw-bold mb-3">Verifikasi Email</h3>
                     <p class="text-muted small mb-4">Masukkan 6 digit kode yang telah kami kirimkan ke
-                        <b><?= $email_input ?></b>.</p>
+                        <b><?= $email_input ?></b>.
+                    </p>
 
                     <?php if (isset($error)): ?>
                         <div class="alert alert-danger py-2"><?= $error ?></div>

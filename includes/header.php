@@ -22,7 +22,7 @@ require_once __DIR__ . '/../config/database.php';
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand text-primary fw-bold" href="<?= BASE_URL ?>/pages/index.php">
+            <a class="navbar-brand text-primary fw-bold" href="<?= BASE_URL ?>/index.php">
                 <i class="bi bi-calendar-event"></i> EVENT<span class="text-dark">KAMPUS</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,10 +31,10 @@ require_once __DIR__ . '/../config/database.php';
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/pages/index.php">Beranda</a>
+                    <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/index.php">Beranda</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link px-3"
-                            href="<?= BASE_URL ?>/pages/index.php#events">Jelajahi</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/index.php#events">Jelajahi</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link px-3" href="<?= BASE_URL ?>/pages/info_tips.php">Info &
                             Tips</a></li>
                 </ul>

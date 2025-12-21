@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../classes/Event.php';
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'event_organizer' && $_SESSION['role'] !== 'admin') || !isset($_GET['id'])) {

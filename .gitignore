@@ -3,5 +3,5 @@
 /node_modules/
 /assets/documents/
 /assets/images/*
-debug_tools.php
+/debug_tools
 FINAL_EVALUATION.md

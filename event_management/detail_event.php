@@ -3,7 +3,7 @@ require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../config/email_helper.php';
 
 if (!isset($_GET['id']) || empty($_GET['id'])) {
-    echo "<script>window.location='" . BASE_URL . "/pages/index.php';</script>";
+    echo "<script>window.location='" . BASE_URL . "/index.php';</script>";
     exit;
 }
 $event_id = (int) $_GET['id'];
@@ -200,7 +200,7 @@ if ($user_id) {
                         <?php else: ?>
                             <a href="<?= BASE_URL ?>/auth/login.php" class="btn btn-primary fw-bold">Login untuk Daftar</a>
                         <?php endif; ?>
-                        <a href="<?= BASE_URL ?>/pages/index.php" class="btn btn-outline-secondary">Kembali</a>
+                        <a href="<?= BASE_URL ?>/index.php" class="btn btn-outline-secondary">Kembali</a>
                     </div>
                 </div>
             </div>
