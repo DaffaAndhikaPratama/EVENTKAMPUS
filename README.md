@@ -85,9 +85,9 @@ Kampus seringkali memiliki banyak kegiatan menarik, namun penyebaran informasiny
     composer install
     ```
 3.  ## Import Database
-    1.  Buat database baru di phpMyAdmin (misalnya: `web_event_db`).
-    2.  Import file database SQL yang disertakan dalam project ini (jika ada, biasanya bernama `database.sql` atau sejenisnya).
-         *   *Catatan: Pastikan struktur tabel sesuai dengan kebutuhan aplikasi (users, events, event_registrations, dll).* 
+    1. Buat database baru di phpMyAdmin (misalnya: `web_event_db`).
+    2. Import file database SQL yang disertakan dalam project ini (jika ada, biasanya bernama `database.sql` atau sejenisnya).
+        *   *Catatan: Pastikan struktur tabel sesuai dengan kebutuhan aplikasi (users, events, event_registrations, dll).* 
 4.  **Konfigurasi .env:**
         Buat file bernama `.env` di folder root project, lalu salin konfigurasi berikut dan sesuaikan nilainya:
 
