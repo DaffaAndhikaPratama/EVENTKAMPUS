@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 19, 2025 at 10:00 AM
+-- Generation Time: Dec 21, 2025 at 10:40 AM
 -- Server version: 8.0.43
 -- PHP Version: 8.1.10
 
@@ -31,6 +31,8 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `articles`
 --
+
+DROP TABLE IF EXISTS `articles`;
 
 CREATE TABLE `articles` (
     `id` int NOT NULL,
@@ -89,6 +91,8 @@ VALUES (
 --
 -- Table structure for table `events`
 --
+
+DROP TABLE IF EXISTS `events`;
 
 CREATE TABLE `events` (
     `id` int NOT NULL,
@@ -203,6 +207,8 @@ VALUES (
 -- Table structure for table `event_registrations`
 --
 
+DROP TABLE IF EXISTS `event_registrations`;
+
 CREATE TABLE `event_registrations` (
     `id` int NOT NULL,
     `user_id` int NOT NULL,
@@ -244,6 +250,8 @@ VALUES (
 -- Table structure for table `notifications`
 --
 
+DROP TABLE IF EXISTS `notifications`;
+
 CREATE TABLE `notifications` (
     `id` int NOT NULL,
     `user_id` int NOT NULL,
@@ -252,7 +260,9 @@ CREATE TABLE `notifications` (
     `is_read` tinyint(1) DEFAULT '0',
     `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `link` varchar(255) DEFAULT NULL,
-    `is_pushed` tinyint(1) DEFAULT '0'
+    `is_pushed` tinyint(1) DEFAULT '0',
+    `type` enum('email', 'push', 'web') DEFAULT 'web',
+    `status` enum('sent', 'failed', 'pending') DEFAULT 'sent'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 --
@@ -268,7 +278,9 @@ INSERT INTO
         `is_read`,
         `created_at`,
         `link`,
-        `is_pushed`
+        `is_pushed`,
+        `type`,
+        `status`
     )
 VALUES (
         1,
@@ -278,7 +290,9 @@ VALUES (
         0,
         NOW(),
         NULL,
-        1
+        1,
+        'web',
+        'sent'
     );
 
 -- --------------------------------------------------------
@@ -286,6 +300,8 @@ VALUES (
 --
 -- Table structure for table `participants`
 --
+
+DROP TABLE IF EXISTS `participants`;
 
 CREATE TABLE `participants` (
     `id` int NOT NULL,
@@ -299,6 +315,8 @@ CREATE TABLE `participants` (
 --
 -- Table structure for table `users`
 --
+
+DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
     `id` int NOT NULL,
@@ -444,6 +462,8 @@ CREATE TABLE `view_participant_list` (
 --
 DROP TABLE IF EXISTS `view_event_details`;
 
+DROP VIEW IF EXISTS `view_event_details`;
+
 CREATE ALGORITHM = UNDEFINED DEFINER = `root` @`localhost` SQL SECURITY DEFINER VIEW `view_event_details` AS
 SELECT
     `e`.`id` AS `event_id`,
@@ -470,6 +490,8 @@ FROM (
 -- Structure for view `view_event_stats`
 --
 DROP TABLE IF EXISTS `view_event_stats`;
+
+DROP VIEW IF EXISTS `view_event_stats`;
 
 CREATE ALGORITHM = UNDEFINED DEFINER = `root` @`localhost` SQL SECURITY DEFINER VIEW `view_event_stats` AS
 SELECT
@@ -516,6 +538,8 @@ GROUP BY
 --
 DROP TABLE IF EXISTS `view_participant_list`;
 
+DROP VIEW IF EXISTS `view_participant_list`;
+
 CREATE ALGORITHM = UNDEFINED DEFINER = `root` @`localhost` SQL SECURITY DEFINER VIEW `view_participant_list` AS
 SELECT
     `r`.`id` AS `registration_id`,
@@ -532,6 +556,8 @@ FROM (
         `event_registrations` `r`
         join `users` `u` on ((`r`.`user_id` = `u`.`id`))
     );
+
+-- --------------------------------------------------------
 
 --
 -- Indexes for dumped tables
