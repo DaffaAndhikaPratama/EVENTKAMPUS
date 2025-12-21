@@ -117,8 +117,8 @@ Berikut adalah akun default untuk pengujian (jika menggunakan data dummy standar
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | **Admin** | `admin@gmail.com` | `123456` |
-| **Event Organizer** | `eo@gmail.com` | `123456` |
-| **Mahasiswa** | `mhs@gmail.com` | `123456` |
+| **Event Organizer** | `EO@gmail.com` | `123456` |
+| **Mahasiswa** | `mahasiswa@gmail.com` | `123456` |
 
 ## Tim Pengembang
 
