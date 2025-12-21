@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/google_init.php';
 
 if (!isset($_GET['code'])) {
-    header('Location: ../pages/index.php');
+    header('Location: ../index.php');
     exit;
 }
 

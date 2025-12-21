@@ -5,7 +5,7 @@ $client = require_once __DIR__ . '/../config/google_init.php';
 
 
 if (isset($_SESSION['user_id'])) {
-    echo "<script>window.location='" . BASE_URL . "/pages/index.php';</script>";
+    echo "<script>window.location='" . BASE_URL . "/index.php';</script>";
     exit;
 }
 
@@ -29,7 +29,7 @@ if (isset($_POST['login'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['name'] = $user['name'];
                 $_SESSION['role'] = $user['role'];
-                echo "<script>window.location='" . BASE_URL . "/pages/index.php';</script>";
+                echo "<script>window.location='" . BASE_URL . "/index.php';</script>";
                 exit;
             }
         } else {
